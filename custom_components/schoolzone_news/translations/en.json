@@ -1,0 +1,55 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sign in to SchoolZone",
+        "description": "Use the same username and password you use at schoolzone.epsb.ca.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "streams": {
+        "title": "Choose news streams",
+        "description": "Each stream becomes its own sensor. SchoolZone is checked twice a day at the times below (Home Assistant's time zone).",
+        "data": {
+          "news_types": "News streams",
+          "morning_time": "Morning check",
+          "evening_time": "Evening check"
+        }
+      },
+      "reauth_confirm": {
+        "title": "SchoolZone sign-in expired",
+        "description": "Enter the current SchoolZone password for {username}.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "SchoolZone didn't accept that username or password.",
+      "cannot_connect": "Couldn't reach SchoolZone. Try again in a minute.",
+      "no_streams": "Pick at least one news stream."
+    },
+    "abort": {
+      "already_configured": "This SchoolZone account is already set up.",
+      "reauth_successful": "Signed back in."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SchoolZone News options",
+        "data": {
+          "news_types": "News streams",
+          "morning_time": "Morning check",
+          "evening_time": "Evening check"
+        },
+        "description": "SchoolZone is checked twice a day at these times (Home Assistant's time zone). Use the Check now button for an extra check."
+      }
+    },
+    "error": {
+      "no_streams": "Pick at least one news stream."
+    }
+  }
+}
