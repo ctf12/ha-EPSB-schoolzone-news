@@ -5,7 +5,7 @@ Brings Edmonton Public Schools [SchoolZone](https://schoolzone.epsb.ca) announce
 ## Features
 
 - One sensor per news stream (School, Class, Division, Trustee, SchoolZone, Transportation), including post attachments.
-- Checks SchoolZone twice a day at times you choose (Home Assistant's time zone).
+- Checks SchoolZone on weekdays at two times you choose (Home Assistant's time zone), once on Sunday at 7:00 PM, and not at all on Saturday.
 - A **Check now** button for an extra refresh.
 - Posts are cached, so a restart doesn't trigger a refetch unless a scheduled check was missed.
 - Re-authentication flow when your SchoolZone password changes.

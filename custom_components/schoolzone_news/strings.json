@@ -11,7 +11,7 @@
       },
       "streams": {
         "title": "Choose news streams",
-        "description": "Each stream becomes its own sensor. SchoolZone is checked twice a day at the times below (Home Assistant's time zone).",
+        "description": "Each stream becomes its own sensor. On weekdays SchoolZone is checked at the times below (Home Assistant's time zone). On weekends it is checked once, Sunday at 7:00 PM.",
         "data": {
           "news_types": "News streams",
           "morning_time": "Morning check",
@@ -45,7 +45,7 @@
           "morning_time": "Morning check",
           "evening_time": "Evening check"
         },
-        "description": "SchoolZone is checked twice a day at these times (Home Assistant's time zone). Use the Check now button for an extra check."
+        "description": "On weekdays SchoolZone is checked at these times (Home Assistant's time zone). On weekends it is checked once, Sunday at 7:00 PM. Use the Check now button for an extra check."
       }
     },
     "error": {

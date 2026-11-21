@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, time, timedelta
+from functools import partial
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -21,6 +22,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util import dt as dt_util
 
 from .api import Announcement, SchoolZoneAuthError, SchoolZoneClient, SchoolZoneError
+from .schedule import all_check_times, last_slot, times_for_day
 from .const import (
     CONF_EVENING_TIME,
     CONF_MORNING_TIME,
@@ -102,23 +104,20 @@ class SchoolZoneCoordinator(DataUpdateCoordinator[dict[str, list[Announcement]]]
         return fetched_at >= self._last_scheduled_slot()
 
     def _last_scheduled_slot(self) -> datetime:
-        now = dt_util.now()
-        slots = []
-        for t in self.check_times:
-            slot = now.replace(hour=t.hour, minute=t.minute, second=t.second, microsecond=0)
-            if slot > now:
-                slot -= timedelta(days=1)
-            slots.append(slot)
-        return max(slots)
+        return last_slot(dt_util.now(), self.check_times)
 
     # ---------- schedule ----------
 
     @callback
     def async_start_schedule(self) -> None:
-        for t in self.check_times:
+        for t in all_check_times(self.check_times):
             self._unsubs.append(
                 async_track_time_change(
-                    self.hass, self._scheduled_check, hour=t.hour, minute=t.minute, second=t.second
+                    self.hass,
+                    partial(self._scheduled_check, t),
+                    hour=t.hour,
+                    minute=t.minute,
+                    second=t.second,
                 )
             )
 
@@ -136,7 +135,10 @@ class SchoolZoneCoordinator(DataUpdateCoordinator[dict[str, list[Announcement]]]
             self._retry_unsub = None
 
     @callback
-    def _scheduled_check(self, _now: datetime) -> None:
+    def _scheduled_check(self, slot: time, _now: datetime) -> None:
+        # Listeners fire daily; weekends only run their own slots (see schedule.py).
+        if slot not in times_for_day(dt_util.now().date(), self.check_times):
+            return
         self._cancel_retry()
         self._retries_left = MAX_RETRIES
         self.hass.async_create_task(self.async_refresh(), eager_start=True)

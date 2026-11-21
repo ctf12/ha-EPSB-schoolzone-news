@@ -42,3 +42,7 @@ MAX_SEEN_IDS = 500
 def store_key(entry_id: str) -> str:
     """Storage key holding seen ids and the last fetched announcements."""
     return f"{DOMAIN}.{entry_id}"
+
+# Weekends: no check on Saturday, a single check on Sunday evening. Weekdays use
+# the configurable morning and evening times.
+SUNDAY_CHECK_TIME = "19:00:00"
