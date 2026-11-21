@@ -254,8 +254,15 @@ class SchoolZoneClient:
         if not self._logged_in:
             await self.login()
 
-        html = await self._get_news_html(news_type)
-        if looks_like_login_page(html):
+        # An expired session shows up either as the sign-in page or as an HTTP
+        # 401/403. Both mean "sign in again", not "the password is wrong".
+        try:
+            html = await self._get_news_html(news_type)
+            expired = looks_like_login_page(html)
+        except SchoolZoneAuthError:
+            expired = True
+
+        if expired:
             _LOGGER.debug("SchoolZone session expired; signing in again")
             self._logged_in = False
             await self.login()

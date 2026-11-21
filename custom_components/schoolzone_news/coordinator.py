@@ -151,6 +151,10 @@ class SchoolZoneCoordinator(DataUpdateCoordinator[dict[str, list[Announcement]]]
     async def _async_update_data(self) -> dict[str, list[Announcement]]:
         result: dict[str, list[Announcement]] = {}
         try:
+            # Checks are hours apart, so any session held from the last one has
+            # almost certainly expired. Sign in fresh once per check rather than
+            # guessing; fetch_news still recovers if the session drops mid-check.
+            await self.client.login()
             for news_type in self.news_types:
                 result[news_type] = await self.client.fetch_news(news_type)
         except SchoolZoneAuthError as err:
